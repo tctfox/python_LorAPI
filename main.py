@@ -23,6 +23,7 @@ def searchKeyword(keyword):
 
     for k in range(1,6):
         for i in readJson(str(k)):
+            counter = 0
             if lowerInput(i['name']) == lowerInput(keyword):
                 return Card(i['name'], i['descriptionRaw'], i['set'], i['assets'][0]["gameAbsolutePath"])
 
