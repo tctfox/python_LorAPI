@@ -19,13 +19,21 @@ def printCard(Card):
     else:
         print("Card was not found")
 
-def searchKeyword(keyword):
-
+def searchCard(keyword):
+    list = []
+    isChampion = False
     for k in range(1,6):
+
         for i in readJson(str(k)):
-            counter = 0
-            if lowerInput(i['name']) == lowerInput(keyword):
-                return Card(i['name'], i['descriptionRaw'], i['set'], i['assets'][0]["gameAbsolutePath"])
+            if lowerInput(i['name']) == lowerInput(keyword) and i['supertype'] == "Champion":
+                isChampion = True;
+                list.append(Card(i['name'], i['descriptionRaw'], i['set'], i['assets'][0]["gameAbsolutePath"], ["cardCode"]))
+
+            elif lowerInput(i['name']) == lowerInput(keyword):
+                    isChampion = False;
+                    list.append(Card(i['name'], i['descriptionRaw'], i['set'], i['assets'][0]["gameAbsolutePath"], ["cardCode"]))
+    return list
+
 
 def checkIfEmpty():
     for i in readJson("1"):
@@ -36,14 +44,24 @@ def checkIfEmpty():
 def lowerInput(input):
     return input.lower()
 
+
 class Card:
-  def __init__(self, name, description, set, absolutePath):
+  def __init__(self, name, description, set, absolutePath, cardCode):
     self.name = name
     self.description = description
     self.set = set
     self.absolutePath = absolutePath
+    self.cardCode = cardCode
 
 
-card1 = searchKeyword("Senna")
+cardList = searchCard("The Howling Abyss")
 
-printCard(card1)
+if len(cardList) == 2:
+    print("2 champions")
+
+if len(cardList) == 1:
+    print("1 card")
+    print(cardList[0].name)
+
+if len(cardList) == 0:
+    print("No card found")
