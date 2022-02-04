@@ -15,7 +15,8 @@ urlToDB = "Cards.db"
 
 class LoR(commands.Cog):
     """
-    A short description of the cog.
+    With LoR commands you can search for Legends of Runterra cards and their art. You can also get all sorts of info on
+    Keywords or Vocab Terms via the info command. Have fun!
     """
 
     def __init__(self, bot: Red) -> None:
@@ -33,6 +34,7 @@ class LoR(commands.Cog):
 
     @commands.command(aliases = ["lorcard"])
     async def card(self, ctx, *, cardSearchName):
+        """Searched the card and displays all matches. For champions their tier 1, 2 and spell are displayed"""
 
         connection = sqlite3.connect(urlToDB)
         cursor = connection.cursor()
@@ -49,12 +51,13 @@ class LoR(commands.Cog):
         if len(results) == 0:
             embed = discord.Embed(title=f"{cardSearchName}", colour=discord.Colour(2123412),
                                   url=f"https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-                                  description=f"No cards found witht this name")
+                                  description=f"No cards found with this name")
             await ctx.send(embed=embed)
         connection.close()
 
     @commands.command(aliases = ["lorart", "lorcardart", "cardart"])
     async def cardArt(self, ctx, *, cardSearchName):
+        """Searched the card art and displays all matches. For champions their tier 1, 2 and spell are displayed"""
 
         connection = sqlite3.connect(urlToDB)
         cursor = connection.cursor()
@@ -71,7 +74,30 @@ class LoR(commands.Cog):
         if len(results) == 0:
             embed = discord.Embed(title=f"{cardSearchName}", colour=discord.Colour(2123412),
                                   url=f"https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-                                  description=f"No cards found witht this name")
+                                  description=f"No cards found with this name")
+            await ctx.send(embed=embed)
+        connection.close()
+
+    @commands.command(aliases = ["lorart", "lorcardart", "cardart"])
+    async def cardInfo(self, ctx, *, cardSearchTerm):
+        """With this command you can search for card terms such as the keywords or vocab terms"""
+
+        connection = sqlite3.connect(urlToDB)
+        cursor = connection.cursor()
+        cursor.execute(f"SELECT * from cards WHERE name like '%{cardSearchTerm}%'")
+        results = cursor.fetchall()
+
+        for currentcard in results:
+            cardName = currentcard[0]
+            cardCode = currentcard[3]
+            flavorText = currentcard[2]
+            fullGameAbsolutePath = currentcard[5]
+            await ctx.send(embed=embedCardArt(cardName, cardCode, flavorText, fullGameAbsolutePath))
+
+        if len(results) == 0:
+            embed = discord.Embed(title=f"{cardSearchTerm}", colour=discord.Colour(2123412),
+                                  url=f"https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+                                  description=f"No terms found with this name")
             await ctx.send(embed=embed)
         connection.close()
 
