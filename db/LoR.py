@@ -78,7 +78,7 @@ class LoR(commands.Cog):
             await ctx.send(embed=embed)
         connection.close()
 
-    @commands.command(aliases = ["lorart", "lorcardart", "cardart"])
+    @commands.command(aliases = ["lorinfo", "vocab", "keyword"])
     async def cardInfo(self, ctx, *, cardSearchTerm):
         """With this command you can search for card terms such as the keywords or vocab terms"""
 
