@@ -84,15 +84,14 @@ class LoR(commands.Cog):
 
         connection = sqlite3.connect(urlToDB)
         cursor = connection.cursor()
-        cursor.execute(f"SELECT * from cards WHERE name like '%{cardSearchTerm}%'")
+        cursor.execute(f"SELECT * from misc WHERE name like '%{cardSearchTerm}%'")
         results = cursor.fetchall()
 
         for currentcard in results:
             cardName = currentcard[0]
-            cardCode = currentcard[3]
-            flavorText = currentcard[2]
-            fullGameAbsolutePath = currentcard[5]
-            await ctx.send(embed=embedCardArt(cardName, cardCode, flavorText, fullGameAbsolutePath))
+            description = currentcard[1]
+
+            await ctx.send(embed=embedInfo(cardName, description))
 
         if len(results) == 0:
             embed = discord.Embed(title=f"{cardSearchTerm}", colour=discord.Colour(2123412),
@@ -124,6 +123,16 @@ def embedCardArt(cardName, cardCode, flavorText, cardFullAbsolutePath):
     embed.set_image(url=f"{cardFullAbsolutePath}")
     embed.set_footer(text="ANGRYBACTERIA")
     # embed.add_field(name="to be done", value="to be done")
+    return embed
+
+def embedInfo(name, description):
+
+    embed = discord.Embed(title=f"{name}", colour=discord.Colour(0xeb900),
+                          description=f"{description}",
+                          timestamp=datetime.datetime.now(pytz.UTC))
+
+    #embed.set_image(url=f"{cardGameAbsolutePath}")
+    embed.set_footer(text="ANGRYBACTERIA")
     return embed
 
 
